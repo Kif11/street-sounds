@@ -1,0 +1,4 @@
+bin/
+out/
+samples/
+.DS_Store
