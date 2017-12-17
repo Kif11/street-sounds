@@ -3,7 +3,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 
-#include <zbar.h>
+#include "zbar.h"
 #include "../include/base_64.h"
 #include "../include/qr_chunk.hpp"
 #include "../include/qr_reader.hpp"
@@ -94,8 +94,8 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
     if (poly.rows == 4 && area < 0.53*total_img_area && area > 0.002*total_img_area) {
       std::vector<cv::Point2f> pts = orderPoints(poly);
       qrBlocks.push_back(pts);
-      cv::Scalar color = cv::Scalar( 255,0,0 );
-      //drawContours( image, contours, i, color, 2, 8, hierarchy, 0, cv::Point() );
+      // cv::Scalar color = cv::Scalar( 255,0,0 );
+      // drawContours( image, contours, i, color, 2, 8, hierarchy, 0, cv::Point() );
     }
   }
 
@@ -158,20 +158,21 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
       int n = scanner.scan(image);
       //verify results
       if (n <= 0) {
-        std::cout << "Can not read QR code " << i <<" at dx/dy value "<< dxdy << std::endl;
+          std::cout << "[-] Can not read QR code " << i <<" at dx/dy value "<< dxdy << std::endl;
         // cv::imshow("Error", imgGray);
         // cv::waitKey(0);
       } else {
         chunkVec[i].scanned = true;
+          std::string messageTemp = "";
         for(zbar::Image::SymbolIterator symbol = image.symbol_begin(); symbol != image.symbol_end(); ++symbol) {
-          chunkVec[i].message += symbol->get_data();
+          messageTemp += symbol->get_data();
         }
-        //separate the header from the body in the QRCode message
-        chunkVec[i].separateHeader();
+        if ( !chunkVec[i].setData(messageTemp) ) {
+          chunkVec[i].scanned = false;
+        }
       }
     }
   }
-
   //combine the message
   int count = 0;
   int totalCount = 0;
@@ -180,18 +181,17 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
       if(totalCount < 1) {
         totalCount = chunkVec[i].getCount();
       }
-      std::cout<<"adding "<<i<<std::endl;
+      std::cout << "[+] Image decoded: " << i << std::endl;
       count ++;
     } else {
-      cv::imshow(std::to_string(i), chunkVec[i].m_image);
-      cv::waitKey(0);
+      std::cout << "[!] Image failed: " << i << std::endl;
     }
     //cv::imwrite(std::to_string(i)+".png", warped[i]);
   }
 
-  if (count != totalCount) {
-    std::cout<<"number of QR codes decoded does not match the count in QR header"<<std::endl;
-    return 0;
+  if (count == 0 || count != totalCount) {
+    std::cout << "[!] Number of QR codes decoded does not match the count in QR header" << std::endl;
+    return "";
   };
   //sort chunks by their index encoded in header
   std::sort(chunkVec.begin(), chunkVec.end());

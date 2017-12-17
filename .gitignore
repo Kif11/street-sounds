@@ -2,3 +2,6 @@ bin/
 out/
 samples/
 .DS_Store
+
+ios/Build
+ios/qr-message/lib

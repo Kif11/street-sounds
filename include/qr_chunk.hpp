@@ -6,7 +6,7 @@
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
 
-#include <zbar.h>
+#include "zbar.h"
 #include "../include/base_64.h"
 
 #include <iostream>
@@ -45,7 +45,7 @@ class QrChunk {
     bool operator<( const QrChunk& val ) const;
 
     //MEMBER FUNCTIONS
-    void separateHeader ();
+    bool setData ( std::string _message );
 
     // void setHeader(int index, int total) {
     //   char header[m_raw_header_size];
@@ -59,6 +59,8 @@ class QrChunk {
     int m_header_size = 8;
     std::string m_header; // in base64 format
     std::string m_body; // in base64 format
+    int index = -1;
+    int count = -1;
 };
 
 

@@ -23,11 +23,11 @@ std::string QrChunk::getBody() { return m_body; }
 std::string QrChunk::getData() { return m_header + m_body; }
 
 int QrChunk::getCount () const {
-  return std::stoi(base64_decode(m_header).substr(2,4));
+  return this->count;
 }
 
 int QrChunk::getIndex () const {
-  return std::stoi(base64_decode(m_header).substr(0,2));
+  return this->index;
 }
 
 void QrChunk::setBody(std::string data) { m_body = data; }
@@ -38,7 +38,18 @@ bool QrChunk::operator<( const QrChunk& val ) const {
   return (this->getIndex() < val.getIndex());
 }
 
-void QrChunk::separateHeader () {
-  m_header = message.substr(0, m_header_size);
-  m_body =  message.substr(m_header_size, message.size() - m_header_size);
+bool QrChunk::setData ( std::string _message ) {
+  m_header = _message.substr(0, m_header_size);
+  m_body =  _message.substr(m_header_size, message.size() - m_header_size);
+  
+  try {
+      this->index = std::stoi(base64_decode(m_header).substr(0,2));
+      this->count = std::stoi(base64_decode(m_header).substr(2,4));
+      this->message = _message;
+      return true;
+        
+  } catch (int e) {
+      std::cout << "[-] Header cannot be decoded" << std::endl;
+      return false;
+  }
 }
