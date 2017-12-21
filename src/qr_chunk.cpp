@@ -5,6 +5,7 @@
 #include <fstream>
 #include <math.h>
 #include <string.h>
+#include <exception>
 
 
 QrChunk::QrChunk(std::string data) {
@@ -38,18 +39,36 @@ bool QrChunk::operator<( const QrChunk& val ) const {
   return (this->getIndex() < val.getIndex());
 }
 
-bool QrChunk::setData ( std::string _message ) {
-  m_header = _message.substr(0, m_header_size);
-  m_body =  _message.substr(m_header_size, message.size() - m_header_size);
-  
-  try {
-      this->index = std::stoi(base64_decode(m_header).substr(0,2));
-      this->count = std::stoi(base64_decode(m_header).substr(2,4));
-      this->message = _message;
+bool has_only_digits(const std::string s){
+  std::size_t found = s.find_first_not_of("0123456789");
+  if (found == std::string::npos) {
+    // std::cout << "not found" << std::endl;
+    return true;
+  } else {
+    if (s[found] == '\0') {
       return true;
-        
-  } catch (int e) {
-      std::cout << "[-] Header cannot be decoded" << std::endl;
-      return false;
+    }
+    return false;
   }
+}
+
+bool QrChunk::setData ( std::string _message ) {
+
+    if (_message.length() < m_header_size + 4 ) return false;
+
+    m_header = _message.substr(0, m_header_size);
+    m_body =  _message.substr(m_header_size, message.size() - m_header_size);
+
+    std::string t_header = base64_decode(m_header).substr(0,2);
+    std::string t_count = base64_decode(m_header).substr(2,4);
+
+    if (!has_only_digits(t_header)) {return false;}
+    if (!has_only_digits(t_count)) {return false;}
+
+    this->index = std::stoi(t_header);
+    this->count = std::stoi(t_count);
+    this->message = _message;
+
+    return true;
+
 }

@@ -55,7 +55,7 @@ std::vector<cv::Point2f> orderPoints(cv::Mat& tmp) {
 }
 
 
-std::string QrReader::read_qr_from_image(cv::Mat image) {
+bool QrReader::read_qr_from_image(cv::Mat image) {
 
   int total_img_area = image.rows * image.cols;
   int erode_mat_coeff = image.rows / 121;
@@ -76,7 +76,7 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
   cv::Mat M = cv::Mat::ones(erode_mat_coeff, erode_mat_coeff, CV_8U);
   cv::Point anchor = cv::Point(-1, -1);
   cv::erode(thresh, threshErode, M, anchor, 1, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue());
-  
+
   //find contours
   std::vector<std::vector<cv::Point> > contours;
   cv::findContours(threshErode, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
@@ -91,7 +91,9 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
     float area = cv::contourArea(contours[i]);
 
     //filter out polygons with outlier areas , and those that are not quadrilaterals
-    if (poly.rows == 4 && area < 0.53*total_img_area && area > 0.002*total_img_area) {
+    //if (poly.rows == 4 && area < 0.53*total_img_area && area > 0.002*total_img_area) {
+    if (poly.rows == 4 && area > 0.002*total_img_area) {
+
       std::vector<cv::Point2f> pts = orderPoints(poly);
       qrBlocks.push_back(pts);
       // cv::Scalar color = cv::Scalar( 255,0,0 );
@@ -131,9 +133,6 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
     chunkVec.push_back(chunk);
   }
 
-  //std::vector<bool> scanned(qrBlocks.size(), false); //vector to keep track of successfully scanned QRs
-  //std::vector<std::string> message(qrBlocks.size()); //vector to keep track of message in parts
-
   //initialize the qr barcode scanner
   zbar::ImageScanner scanner;
   scanner.set_config(zbar::ZBAR_NONE, zbar::ZBAR_CFG_ENABLE, 1);
@@ -158,7 +157,7 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
       int n = scanner.scan(image);
       //verify results
       if (n <= 0) {
-          std::cout << "[-] Can not read QR code " << i <<" at dx/dy value "<< dxdy << std::endl;
+        // std::cout << "[-] Can not read QR code " << i <<" at dx/dy value "<< dxdy << std::endl;
         // cv::imshow("Error", imgGray);
         // cv::waitKey(0);
       } else {
@@ -173,38 +172,49 @@ std::string QrReader::read_qr_from_image(cv::Mat image) {
       }
     }
   }
-  //combine the message
-  int count = 0;
+
   int totalCount = 0;
-  for (int i = 0; i < chunkVec.size(); i ++) {
+  //combine the message
+  for ( int i = 0; i < chunkVec.size(); i ++ ) {
     if(chunkVec[i].scanned) {
-      if(totalCount < 1) {
+      if( this->data.size() == 0 ) {
         totalCount = chunkVec[i].getCount();
+        this->data.resize(totalCount);
       }
-      std::cout << "[+] Image decoded: " << i << std::endl;
-      count ++;
+      // std::cout << "[+] Image decoded: " << i << std::endl;
+      this->data[chunkVec[i].getIndex()] = chunkVec[i].getBody();
     } else {
-      std::cout << "[!] Image failed: " << i << std::endl;
+      // std::cout << "[!] Image failed: " << i << std::endl;
     }
     //cv::imwrite(std::to_string(i)+".png", warped[i]);
   }
 
-  if (count == 0 || count != totalCount) {
-    std::cout << "[!] Number of QR codes decoded does not match the count in QR header" << std::endl;
-    return "";
-  };
-  //sort chunks by their index encoded in header
-  std::sort(chunkVec.begin(), chunkVec.end());
-
-  //combine data from body of each decoded QR code
-  std::string finalMessage="";
-  for (int i = 0; i < chunkVec.size(); i++){
-    finalMessage += chunkVec[i].getBody();
+  if ( this->data.size() == 0 ) {
+    // std::cout << "[!] No qr codes detected " << std::endl;
+    return false;
   }
 
-  //output final message
-  // std::ofstream outputFile("out/msg.mp3");
-  // outputFile << base64_decode(finalMessage);
+  bool allScanned = true;
+
+  for ( int i = 0; i < this->data.size(); i++ ) {
+    if ( this->data[i].size() < 1 ) {
+      std::cout << "[!] Still looking for qrcode : " << i << std::endl;
+      allScanned = false;
+    }
+  }
+  return allScanned;
+}
+
+std::string QrReader::combine_final_message() {
+  // combine data from body of each decoded QR code
+  std::string finalMessage="";
+  for ( auto&x : this->data ){
+    finalMessage += x;
+  }
+
+  // output final message
+  std::ofstream outputFile("out/msg.mp3");
+  outputFile << base64_decode(finalMessage);
 
   return finalMessage;
 }

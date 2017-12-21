@@ -7,7 +7,10 @@
 
 class QrReader {
 public:
-  std::string read_qr_from_image(cv::Mat image);
+  bool read_qr_from_image(cv::Mat image); //true when done
+  std::string combine_final_message();
+private:
+  std::vector<std::string> data;
 };
 
 #endif
