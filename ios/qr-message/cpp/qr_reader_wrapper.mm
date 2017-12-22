@@ -30,4 +30,9 @@ QrReader qr;
   return qr.clear_data();
 }
 
++(UIImage* ) getDebugImage {
+  cv::Mat debugImg = qr.get_debug_image();
+  return MatToUIImage(debugImg);
+}
+
 @end

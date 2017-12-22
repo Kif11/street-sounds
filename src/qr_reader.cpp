@@ -186,9 +186,10 @@ bool QrReader::read_qr_from_image(cv::Mat image) {
       }
       // std::cout << "[+] Image decoded: " << i << std::endl;
       this->data[chunkVec[i].getIndex()] = chunkVec[i].getBody();
+      cv::rectangle(this->image, chunkVec[i].m_pts[0], chunkVec[i].m_pts[2], cv::Scalar(0, 255, 0, 255), 60);
+
     } else {
       //show the image that failed...
-      cv::rectangle(this->image, chunkVec[i].m_pts[0], chunkVec[i].m_pts[2], cv::Scalar(255,0,0));
       // std::cout << "[!] Image failed: " << i << std::endl;
     }
     //cv::imwrite(std::to_string(i)+".png", warped[i]);

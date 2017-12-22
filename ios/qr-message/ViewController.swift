@@ -7,7 +7,7 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
     @IBOutlet weak var previewView: UIView!
     @IBOutlet weak var photoButton: UIButton!
     @IBOutlet weak var infoLable: UILabel!
-    @IBOutlet weak var outLable: UILabel!
+    @IBOutlet weak var flashSwitch: UISwitch!
   
     var player: AVAudioPlayer!
     let session = AVCaptureSession()
@@ -205,12 +205,16 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
     
     @IBAction func capturePhoto(_ sender: UIButton) {
       
-      outLable.text = "Processing..."
+      infoLable.text = "Processing..."
     
       let photoSettings = AVCapturePhotoSettings()
       photoSettings.isHighResolutionPhotoEnabled = true
       if self.videoDeviceInput.device.isFlashAvailable {
-        photoSettings.flashMode = .auto
+        if (flashSwitch.isOn) {
+          photoSettings.flashMode = .on
+        } else {
+          photoSettings.flashMode = .off
+        }
       }
       if !photoSettings.availablePreviewPhotoPixelFormatTypes.isEmpty {
         photoSettings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: photoSettings.availablePreviewPhotoPixelFormatTypes.first!]
@@ -221,8 +225,8 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
     @IBAction func testBtn(_ sender: UIButton) {
       print("[D] testBtn pressed!")
     }
-    
-    func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+  
+  func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
       
       if let error = error {
         print("[-] Error capturing photo: \(error)")
@@ -230,18 +234,21 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
         let imageData = photo.fileDataRepresentation()
 
         let image = UIImage(data: imageData!)
-        
-        // Set preview window image
-        self.capturedImage.image = image
-
+      
         allDetected = qr_reader_wrapper.processQrImage(image)
+        
+        let debugImage = qr_reader_wrapper.getDebugImage()
+        
+        self.capturedImage.image = debugImage
+        // Rotate 90 degree
+        self.capturedImage.transform = CGAffineTransform(rotationAngle: CGFloat.pi/2)
 
         if (!allDetected) {
-          outLable.text = "More to detect!"
+          infoLable.text = "More to detect!"
         } else {
           let dataStr = qr_reader_wrapper.getFinalImage()
           print(dataStr ?? "[-] No data!")
-          outLable.text = "All detected"
+          infoLable.text = "All detected"
 
           let data = Data(base64Encoded: dataStr!)
 

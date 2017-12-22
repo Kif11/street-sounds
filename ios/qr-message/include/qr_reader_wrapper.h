@@ -14,5 +14,6 @@
 + (bool) processQrImage:(UIImage *)isAllDecoded;
 + (NSString*) getFinalImage;
 + (int) clearData;
++ (UIImage* ) getDebugImage;
 
 @end
