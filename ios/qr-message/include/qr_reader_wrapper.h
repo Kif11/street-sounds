@@ -11,6 +11,8 @@
 
 @interface qr_reader_wrapper : NSObject
 
-+ (NSString *) processQrImage:(UIImage *)image;
++ (bool) processQrImage:(UIImage *)isAllDecoded;
++ (NSString*) getFinalImage;
++ (int) clearData;
 
 @end

@@ -13,14 +13,21 @@
 
 @implementation qr_reader_wrapper
 
-+(NSString *) processQrImage:(UIImage *)image {
-    cv::Mat imageMat;
-    UIImageToMat(image, imageMat);
-    
-    QrReader qr;
-    std::string data = qr.read_qr_from_image(imageMat);
-    
-    return [NSString stringWithCString:data.c_str() encoding:[NSString defaultCStringEncoding]];
+QrReader qr;
+
++(bool) processQrImage:(UIImage *)image {
+  cv::Mat imageMat;
+  UIImageToMat(image, imageMat);
+  return qr.read_qr_from_image(imageMat);
+}
+
++(NSString*) getFinalImage {
+  std::string data = qr.combine_final_message();
+  return [NSString stringWithCString:data.c_str() encoding:[NSString defaultCStringEncoding]];
+}
+
++(int) clearData {
+  return qr.clear_data();
 }
 
 @end

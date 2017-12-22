@@ -5,3 +5,4 @@ samples/
 
 ios/Build
 ios/qr-message/lib
+.vscode

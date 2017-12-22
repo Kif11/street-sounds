@@ -91,8 +91,8 @@ bool QrReader::read_qr_from_image(cv::Mat image) {
     float area = cv::contourArea(contours[i]);
 
     //filter out polygons with outlier areas , and those that are not quadrilaterals
-    //if (poly.rows == 4 && area < 0.53*total_img_area && area > 0.002*total_img_area) {
-    if (poly.rows == 4 && area > 0.002*total_img_area) {
+    if (poly.rows == 4 && area < 0.53*total_img_area && area > 0.002*total_img_area) {
+    //if (poly.rows == 4 && area > 0.002*total_img_area) {
 
       std::vector<cv::Point2f> pts = orderPoints(poly);
       qrBlocks.push_back(pts);
@@ -217,4 +217,9 @@ std::string QrReader::combine_final_message() {
   outputFile << base64_decode(finalMessage);
 
   return finalMessage;
+}
+
+int QrReader::clear_data() {
+  this->data.clear();
+  return 0;
 }
