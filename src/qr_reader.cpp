@@ -220,3 +220,8 @@ std::string QrReader::combine_final_message() {
 }
 
 cv::Mat QrReader::get_debug_image() {return this->image;}
+
+int QrReader::clear_data() {
+  this->data.clear();
+  return 0;
+}

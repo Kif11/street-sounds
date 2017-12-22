@@ -9,11 +9,13 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
     @IBOutlet weak var infoLable: UILabel!
     @IBOutlet weak var outLable: UILabel!
   
-    var player = AVAudioPlayer()
+    var player: AVAudioPlayer!
     let session = AVCaptureSession()
   
     let photoOutput = AVCapturePhotoOutput()
     let sessionQueue = DispatchQueue(label: "session queue", attributes: [], target: nil)
+  
+    var allDetected = false
     
     var previewLayer : AVCaptureVideoPreviewLayer!
     var videoDeviceInput: AVCaptureDeviceInput!
@@ -24,8 +26,8 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
       case notAuthorized
       case configurationFailed
     }
-    
-    override func viewDidLoad() {
+  
+  override func viewDidLoad() {
       super.viewDidLoad()
       
       checkAuthorization()
@@ -216,39 +218,45 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
       photoOutput.capturePhoto(with: photoSettings, delegate: self)
     }
   
-    @IBAction func readFromFileBtn(_ sender: UIButton) {
-      print("Reading from file")
+    @IBAction func testBtn(_ sender: UIButton) {
+      print("[D] testBtn pressed!")
     }
     
     func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+      
       if let error = error {
-        print("Error capturing photo: \(error)")
+        print("[-] Error capturing photo: \(error)")
       } else {
         let imageData = photo.fileDataRepresentation()
-        
+
         let image = UIImage(data: imageData!)
         
-        let dataStr = qr_reader_wrapper.processQrImage(image)
-      
-        print(dataStr ?? "[-] No data!")
-        
-        // Handle string data if decoded
-        if (dataStr!.count > 0) {
-          
-          outLable.text = "Success!"
-          
+        // Set preview window image
+        self.capturedImage.image = image
+
+        allDetected = qr_reader_wrapper.processQrImage(image)
+
+        if (!allDetected) {
+          outLable.text = "More to detect!"
+        } else {
+          let dataStr = qr_reader_wrapper.getFinalImage()
+          print(dataStr ?? "[-] No data!")
+          outLable.text = "All detected"
+
           let data = Data(base64Encoded: dataStr!)
-          let file = "tensec.mp3"
-          if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            let fileURL = dir.appendingPathComponent(file)
-            do {
-              print("[+] Saving sound to file")
-              try data!.write(to: fileURL)
-            }
-            catch {
-              print(error)
-            }
-          }
+
+//          let file = "tensec.mp3"
+//          if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+//            let fileURL = dir.appendingPathComponent(file)
+//            do {
+//              print("[+] Saving sound to file")
+//              try data!.write(to: fileURL)
+//            }
+//            catch {
+//              print(error)
+//            }
+//          }
+
           // Play sound
           do {
             player = try AVAudioPlayer(data: data!, fileTypeHint: "mp3")
@@ -258,12 +266,9 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
           } catch let error {
             print(error)
           }
-        } else {
-          outLable.text = "Scan failed!"
+          
+          qr_reader_wrapper.clearData()
         }
-        
-        // Set preview window image
-        self.capturedImage.image = image
       }
     }
 }

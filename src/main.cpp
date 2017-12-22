@@ -25,8 +25,8 @@ int main(int argc, char* argv[]) {
   //   std::cout << "cannot open camera" << std::endl;
   // }
   std::vector <std::string> images;
-  images.push_back("samples/test1.jpg");
-  images.push_back("samples/test2.jpg");
+  images.push_back("samples/test1/IMG_4608.JPG");
+  images.push_back("samples/test1/IMG_4609.JPG");
   int i = 0;
 
   while(!qrCodesDetected && i<images.size()) {
