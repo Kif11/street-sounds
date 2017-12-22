@@ -35,6 +35,8 @@ void QrChunk::setBody(std::string data) { m_body = data; }
 
 void QrChunk::setImage(cv::Mat image) { m_image = image; }
 
+void QrChunk::setOriginalCoords(std::vector<cv::Point2f> pts) { m_pts = pts;}
+
 bool QrChunk::operator<( const QrChunk& val ) const {
   return (this->getIndex() < val.getIndex());
 }

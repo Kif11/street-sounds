@@ -57,6 +57,8 @@ std::vector<cv::Point2f> orderPoints(cv::Mat& tmp) {
 
 bool QrReader::read_qr_from_image(cv::Mat image) {
 
+  this->image = image;
+
   int total_img_area = image.rows * image.cols;
   int erode_mat_coeff = image.rows / 121;
 
@@ -91,8 +93,8 @@ bool QrReader::read_qr_from_image(cv::Mat image) {
     float area = cv::contourArea(contours[i]);
 
     //filter out polygons with outlier areas , and those that are not quadrilaterals
-    //if (poly.rows == 4 && area < 0.53*total_img_area && area > 0.002*total_img_area) {
-    if (poly.rows == 4 && area > 0.002*total_img_area) {
+    if (poly.rows == 4 && area < 0.53*total_img_area && area > 0.002*total_img_area) {
+    //if (poly.rows == 4 && area > 0.002*total_img_area) {
 
       std::vector<cv::Point2f> pts = orderPoints(poly);
       qrBlocks.push_back(pts);
@@ -130,6 +132,7 @@ bool QrReader::read_qr_from_image(cv::Mat image) {
     cv::copyMakeBorder(imgGray, imgGray, 10, 10, 10, 10, cv::BORDER_CONSTANT, 255);
 
     QrChunk::QrChunk chunk(imgGray);
+    chunk.setOriginalCoords(pts);
     chunkVec.push_back(chunk);
   }
 
@@ -184,6 +187,8 @@ bool QrReader::read_qr_from_image(cv::Mat image) {
       // std::cout << "[+] Image decoded: " << i << std::endl;
       this->data[chunkVec[i].getIndex()] = chunkVec[i].getBody();
     } else {
+      //show the image that failed...
+      cv::rectangle(this->image, chunkVec[i].m_pts[0], chunkVec[i].m_pts[2], cv::Scalar(255,0,0));
       // std::cout << "[!] Image failed: " << i << std::endl;
     }
     //cv::imwrite(std::to_string(i)+".png", warped[i]);
@@ -211,10 +216,7 @@ std::string QrReader::combine_final_message() {
   for ( auto&x : this->data ){
     finalMessage += x;
   }
-
-  // output final message
-  std::ofstream outputFile("out/msg.mp3");
-  outputFile << base64_decode(finalMessage);
-
   return finalMessage;
 }
+
+cv::Mat QrReader::get_debug_image() {return this->image;}

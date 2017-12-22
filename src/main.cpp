@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
@@ -7,6 +8,7 @@
 #include "opencv2/highgui.hpp"
 
 #include "../include/qr_reader.hpp"
+#include "../include/base_64.h"
 
 using namespace std;
 
@@ -32,11 +34,13 @@ int main(int argc, char* argv[]) {
     //stream.read(curFrame);
     qrCodesDetected = qr.read_qr_from_image(curFrame);
     cv::imshow("window", curFrame);
-    cv::waitKey(1);
     i++;
   }
 
   std::string finalMessage = qr.combine_final_message();
-  std::cout << finalMessage << std::endl;
+  //std::cout << finalMessage << std::endl;
+  // output final message
+  std::ofstream outputFile("out/msg.mp3");
+  outputFile << base64_decode(finalMessage);
   return 0;
 }

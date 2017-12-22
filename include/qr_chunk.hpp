@@ -22,6 +22,7 @@ class QrChunk {
   public:
 
     cv::Mat m_image;
+    std::vector<cv::Point2f> m_pts;
     bool scanned = false;
     std::string message = "";
 
@@ -40,6 +41,7 @@ class QrChunk {
     //SETTERS
     void setBody(std::string data);
     void setImage(cv::Mat image);
+    void setOriginalCoords(std::vector<cv::Point2f> pts);
 
     //COMPARATOR
     bool operator<( const QrChunk& val ) const;
