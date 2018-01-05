@@ -15,7 +15,6 @@
 		1F09834D1FE7365900F05F30 /* zbar-help.html in Resources */ = {isa = PBXBuildFile; fileRef = 1F0983451FE7365900F05F30 /* zbar-help.html */; };
 		1F09834E1FE7365900F05F30 /* zbar-helpicons.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F0983461FE7365900F05F30 /* zbar-helpicons.png */; };
 		1F09834F1FE7365900F05F30 /* zbar-samples.png in Resources */ = {isa = PBXBuildFile; fileRef = 1F0983471FE7365900F05F30 /* zbar-samples.png */; };
-		1F1293C11FE610D2001564FB /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1293C01FE610D2001564FB /* SecondViewController.swift */; };
 		1F171D951FE304DF009205ED /* base_64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F171D921FE304D1009205ED /* base_64.cpp */; };
 		1F171D961FE304DF009205ED /* qr_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F171D931FE304D7009205ED /* qr_reader.cpp */; };
 		1F171D971FE304DF009205ED /* qr_chunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F171D941FE304DF009205ED /* qr_chunk.cpp */; };
@@ -26,6 +25,7 @@
 		1F2911401FE0D15000023811 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F29113F1FE0D14900023811 /* CoreVideo.framework */; };
 		1F2911421FE0D15A00023811 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2911411FE0D15700023811 /* QuartzCore.framework */; };
 		1F2911441FE0D16400023811 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2911431FE0D16400023811 /* libiconv.tbd */; };
+		1F7F15AF1FEF0675000A274A /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F7F15AE1FEF0675000A274A /* TableViewController.swift */; };
 		1FCEE95A1FCF41100071A6D7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FCEE9591FCF41100071A6D7 /* AppDelegate.swift */; };
 		1FCEE95C1FCF41100071A6D7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FCEE95B1FCF41100071A6D7 /* ViewController.swift */; };
 		1FCEE95F1FCF41100071A6D7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FCEE95D1FCF41100071A6D7 /* Main.storyboard */; };
@@ -70,7 +70,6 @@
 		1F0983551FE736F200F05F30 /* qr_chunk.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = qr_chunk.hpp; path = ../../../include/qr_chunk.hpp; sourceTree = "<group>"; };
 		1F0983561FE736F200F05F30 /* base_64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = base_64.h; path = ../../../include/base_64.h; sourceTree = "<group>"; };
 		1F0983571FE736F200F05F30 /* qr_reader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = qr_reader.hpp; path = ../../../include/qr_reader.hpp; sourceTree = "<group>"; };
-		1F1293C01FE610D2001564FB /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		1F171D921FE304D1009205ED /* base_64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = base_64.cpp; path = ../../../src/base_64.cpp; sourceTree = "<group>"; };
 		1F171D931FE304D7009205ED /* qr_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qr_reader.cpp; path = ../../../src/qr_reader.cpp; sourceTree = "<group>"; };
 		1F171D941FE304DF009205ED /* qr_chunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qr_chunk.cpp; path = ../../../src/qr_chunk.cpp; sourceTree = "<group>"; };
@@ -81,6 +80,7 @@
 		1F29113F1FE0D14900023811 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		1F2911411FE0D15700023811 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		1F2911431FE0D16400023811 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
+		1F7F15AE1FEF0675000A274A /* TableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		1FCEE9561FCF41100071A6D7 /* qr-message.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "qr-message.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FCEE9591FCF41100071A6D7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FCEE95B1FCF41100071A6D7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -250,7 +250,7 @@
 				1FCEE9591FCF41100071A6D7 /* AppDelegate.swift */,
 				1FCEE95B1FCF41100071A6D7 /* ViewController.swift */,
 				1FCEE95D1FCF41100071A6D7 /* Main.storyboard */,
-				1F1293C01FE610D2001564FB /* SecondViewController.swift */,
+				1F7F15AE1FEF0675000A274A /* TableViewController.swift */,
 				1FCEE9601FCF41100071A6D7 /* Assets.xcassets */,
 				1FCEE9621FCF41100071A6D7 /* LaunchScreen.storyboard */,
 				1FCEE9651FCF41100071A6D7 /* Info.plist */,
@@ -339,7 +339,7 @@
 				1FCEE95C1FCF41100071A6D7 /* ViewController.swift in Sources */,
 				1FE829E91FE05EED00A2A8E2 /* OpenCVWrapper.mm in Sources */,
 				1FCEE95A1FCF41100071A6D7 /* AppDelegate.swift in Sources */,
-				1F1293C11FE610D2001564FB /* SecondViewController.swift in Sources */,
+				1F7F15AF1FEF0675000A274A /* TableViewController.swift in Sources */,
 				1F171D9D1FE30546009205ED /* qr_reader_wrapper.mm in Sources */,
 				1F171D951FE304DF009205ED /* base_64.cpp in Sources */,
 				1F2911141FE0CBF400023811 /* person.cpp in Sources */,
