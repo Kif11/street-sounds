@@ -18,8 +18,10 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
 
   let photoOutput = AVCapturePhotoOutput()
   let sessionQueue = DispatchQueue(label: "session queue", attributes: [], target: nil)
+  let geoCoder = CLGeocoder()
 
   var allDetected = false
+  var locationString = ""
   
   var previewLayer : AVCaptureVideoPreviewLayer!
   var videoDeviceInput: AVCaptureDeviceInput!
@@ -62,7 +64,12 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
     let userLocation:CLLocation = locations[0] as CLLocation
     manager.stopUpdatingLocation()
     
-    print("Current coordinates: ", userLocation)
+    geoCoder.reverseGeocodeLocation(userLocation, completionHandler: {(placemMarks, error) in
+      for pm in placemMarks! {
+        self.locationString = pm.administrativeArea! + ", " + pm.name! + ", " + pm.subLocality!
+      }
+      print("Location string: " , self.locationString)
+    })
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -266,11 +273,14 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate, AVAudioPl
 
         let data = Data(base64Encoded: dataStr!)
 
+        // Get formated date
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd_HH:mm:ss"
         let dateStr = formatter.string(from: Date())
+    
+        // Construct file name
+        let fileName = dateStr + "." + self.locationString + ".mp3"
         
-        let fileName = dateStr + ".mp3"
         if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
           let fileURL = dir.appendingPathComponent(fileName)
           do {

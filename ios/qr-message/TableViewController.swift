@@ -54,8 +54,12 @@ class TableViewController: UITableViewController, AVAudioPlayerDelegate {
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "fileCell", for: indexPath)
-
-    cell.textLabel!.text = files[indexPath.row].lastPathComponent
+    let fileName = files[indexPath.row].lastPathComponent
+    
+    var nameParts = fileName.split{$0 == "."}.map(String.init)
+    
+    cell.textLabel!.text = nameParts[0]
+    cell.detailTextLabel!.text = nameParts[1]
   
     return cell
   }
@@ -78,7 +82,20 @@ class TableViewController: UITableViewController, AVAudioPlayerDelegate {
       print(error)
     }
   }
-
+  
+  @IBAction func deleteAll(_ sender: UIButton) {
+    for f in files {
+      print("[D] Deleting:", f)
+      do {
+        try fileManager.removeItem(at: f.absoluteURL)
+        files.popLast()
+      } catch {
+        print("[-] Can note remove file.", error)
+      }
+    }
+    self.reloadInputViews()
+  }
+  
   /*
   // Override to support conditional editing of the table view.
   override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
