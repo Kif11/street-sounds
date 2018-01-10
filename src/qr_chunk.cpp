@@ -67,8 +67,8 @@ bool QrChunk::setData ( std::string _message ) {
     if (!has_only_digits(t_header)) {return false;}
     if (!has_only_digits(t_count)) {return false;}
 
-    this->index = std::stoi(t_header);
-    this->count = std::stoi(t_count);
+    this->index = std::atoi(t_header.c_str());
+    this->count = std::atoi(t_count.c_str());
     this->message = _message;
 
     return true;
