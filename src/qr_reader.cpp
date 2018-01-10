@@ -104,7 +104,7 @@ bool QrReader::read_qr_from_image(cv::Mat image) {
   }
 
   //unwarp the images
-  std::vector <QrChunk::QrChunk> chunkVec;
+  std::vector <QrChunk> chunkVec;
   for (int i = 0; i < qrBlocks.size(); i ++){
     std::vector<cv::Point2f>& pts = qrBlocks[i];
     //calculate the width of the new square image
@@ -131,7 +131,7 @@ bool QrReader::read_qr_from_image(cv::Mat image) {
     cv::cvtColor(imgWarped, imgGray, CV_RGBA2GRAY);
     cv::copyMakeBorder(imgGray, imgGray, 10, 10, 10, 10, cv::BORDER_CONSTANT, 255);
 
-    QrChunk::QrChunk chunk(imgGray);
+    QrChunk chunk(imgGray);
     chunk.setOriginalCoords(pts);
     chunkVec.push_back(chunk);
   }
