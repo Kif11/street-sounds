@@ -17,7 +17,7 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 DEALINGS IN THE SOFTWARE.
 */
 
-self.importScripts('lame.all.js');
+self.importScripts('lame.min.js');
 
 var recLength = 0,
   recBuffersL = [],
@@ -82,8 +82,7 @@ function exportMp3(type){
   var bufferL = mergeBuffers(recBuffersL, recLength);
   
   var mp3data = encodeMp3(bufferL);
-  var blob = new Blob(mp3data, {type: 'audio/mp3'});
-  // var audioBlob = new Blob([dataview], { type: type });
+  var blob = new Blob(mp3data, { type: type });
 
   this.postMessage(blob);
 }
@@ -126,24 +125,24 @@ function interleave(inputL, inputR){
   return result;
 }
 
-// function floatTo16BitPCM(output, offset, input){
-//   for (var i = 0; i < input.length; i++, offset+=2){
-//     var s = Math.max(-1, Math.min(1, input[i]));
-//     output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-//   }
-// }
+function floatTo16BitPcmWav(output, offset, input){
+  for (var i = 0; i < input.length; i++, offset+=2){
+    var s = Math.max(-1, Math.min(1, input[i]));
+    output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+  }
+}
 
 function floatTo16BitPCM(input, output) {
-  //var offset = 0;
   for (var i = 0; i < input.length; i++) {
     var s = Math.max(-1, Math.min(1, input[i]));
     output[i] = (s < 0 ? s * 0x8000 : s * 0x7FFF);
   }
 };
 
-var convertBuffer = function(arrayBuffer){
-  var data = new Float32Array(arrayBuffer);
-  var out = new Int16Array(arrayBuffer.length);
+var convertBuffer = function(array) {
+  var data = new Float32Array(array);
+  var out = new Int16Array(array.length);
+  
   floatTo16BitPCM(data, out)
   return out;
 };
@@ -155,38 +154,11 @@ function writeString(view, offset, string){
 }
 
 function encodeMp3(samples, mono) {
-  // var mp3Data = [];
-
-  // let samplesMono = convertBuffer(samples);
-
-  // var mp3encoder = new lamejs.Mp3Encoder(1, 44100, 128); //mono 44.1khz encode to 128kbps
-  // // var samples = new Int16Array(44100); //one second of silence replace that with your own samples
-  // var mp3Tmp = mp3encoder.encodeBuffer(samplesMono); //encode mp3
-
-  // //Push encode buffer to mp3Data variable
-  // mp3Data.push(mp3Tmp);
-
-  // // Get end part of mp3
-  // mp3Tmp = mp3encoder.flush();
-
-  // // Write last data to the output data, too
-  // // mp3Data contains now the complete mp3Data
-  // mp3Data.push(mp3Tmp);
-
-  // var c = new Int16Array(mp3Data[0].length + mp3Data[1].length);
-  // c.set(mp3Data[0]);
-  // c.set(mp3Data[1], mp3Data[0].length);
-
-  // var view = new DataView(c.buffer); 
-
-  // return view;
-
   channels = 1; //1 for mono or 2 for stereo
   sampleRate = 44100; //44.1khz (normal mp3 samplerate)
   kbps = 128; //encode 128kbps mp3
   mp3encoder = new lamejs.Mp3Encoder(channels, sampleRate, kbps);
 
-  // samples = new Int16Array(44100); //one second of silence (get your data from the source you have)
   sampleBlockSize = 1152; //can be anything but make it a multiple of 576 to make encoders life easier
 
   let samplesMono = convertBuffer(samples);
@@ -239,7 +211,7 @@ function encodeWAV(samples, mono){
   /* data chunk length */
   view.setUint32(40, samples.length * 2, true);
 
-  floatTo16BitPCM(view, 44, samples);
+  floatTo16BitPcmWav(view, 44, samples);
 
   return view;
 }

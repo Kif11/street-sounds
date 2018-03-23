@@ -19,7 +19,7 @@ DEALINGS IN THE SOFTWARE.
 
 (function(window){
 
-  var WORKER_PATH = 'recorderWorker.js';
+  var WORKER_PATH = 'js/recorderWorker.js';
 
   var Recorder = function(source, cfg){
     var config = cfg || {};
@@ -32,6 +32,7 @@ DEALINGS IN THE SOFTWARE.
     }
    
     var worker = new Worker(config.workerPath || WORKER_PATH);
+
     worker.postMessage({
       command: 'init',
       config: {
@@ -117,10 +118,10 @@ DEALINGS IN THE SOFTWARE.
   };
 
   Recorder.setupDownload = function(blob, filename){
-    var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var link = document.getElementById("save");
-    link.href = url;
-    link.download = filename || 'output.wav';
+    // var url = (window.URL || window.webkitURL).createObjectURL(blob);
+    // var link = document.getElementById("save");
+    // link.href = url;
+    // link.download = filename || 'output.wav';
   }
 
   window.Recorder = Recorder;
