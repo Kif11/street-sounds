@@ -52,11 +52,11 @@ $('#saveQrBtn').click(event => {
   formData.append('selectedFile', curRecordingData);
 
   axios.post('/upload', formData).then((result) => {
-    let imgPath = `qrs/${result.data}`;
-    
-    let img = $('<img id="dynamic">');
-    img.attr('src', imgPath);
-    img.appendTo('#finalQrs');
+    result.data.forEach(imgPath => {      
+      let img = $('<img id="qrImg">');
+      img.attr('src', imgPath);
+      img.appendTo('#finalQrs');
+    });
   }).catch(err => {
     console.log(err);
   });

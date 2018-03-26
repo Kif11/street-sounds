@@ -9,7 +9,7 @@ const md5File = require('md5-file/promise');
 const fs = require("fs.promised/promisify")(require("bluebird"));
 const app = express();
 
-const port = process.env.PORT || 8082;
+const port = process.env.PORT || 8083;
 const debug = process.env.DEBUG || false;
 
 const tmpDir = `tmp`;
@@ -69,10 +69,11 @@ app.post('/upload', upload.single('selectedFile'), async (req, res) => {
   try {
 
     let uploadedFile = path.join(tmpDir, req.file.filename);
-    let convertedMp3 = `./converted/${req.file.filename}.mp3`;
-    let finalQrsDir = `./public/qrs`
+    let convertedMp3 = path.join('converted', `${req.file.filename}.mp3`);
+    let qrsDir = path.join('public', 'qrs');
+    let curQrDir = path.join(qrsDir, req.file.filename);
+    let footerFile = path.join('public', 'imgs', 'footer.png');
     let finalImgExt = 'png';
-    let finalQr = `${finalQrsDir}/${req.file.filename}.${finalImgExt}`
 
     // compute md5hash of uploaded file
     let md5hash = await md5File(uploadedFile);
@@ -97,17 +98,24 @@ app.post('/upload', upload.single('selectedFile'), async (req, res) => {
     // compress and convert mp3 into qr sheet
     let out1 = await utils.compressMp3(storedFile, convertedMp3);
     let out2 = await utils.fileToQrs(convertedMp3, tmpDir);
-    let out3 = await utils.combineQrs(tmpDir, finalQr);
+    await fs.mkdir(curQrDir);
+    let out3 = await utils.combineQrs(tmpDir, curQrDir, footerFile);
 
     if (debug) {
       console.log(out1, out2, out3);
     }
 
-    console.log(`New QR image created ${finalQr}`);
-
     await clearDir(tmpDir);
 
-    res.send(`${req.file.filename}.${finalImgExt}`);
+    let genQrs = await fs.readdir(curQrDir);
+
+    let qrPaths = genQrs.map(i => {
+      return `qrs/${req.file.filename}/${i}`
+    });
+
+    console.log('QRs generated ', qrPaths);
+
+    res.send(qrPaths);
   
   } catch (e) {
     console.log(e);
