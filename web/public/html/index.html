@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Street Sounds Recorder</title>
   <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -29,9 +30,13 @@
     a {
       color: black;
     }
+    p {
+      text-align: justify;
+    }
     h1 {
       font-size: 73px;
       margin-bottom: 0;
+      margin-top: 20px;
     }
     audio { 
       width: var(--page-width);
@@ -41,7 +46,7 @@
     canvas {
       width: var(--page-width);
     }
-    .controlBtn {
+    button {
       color: white;
       font-size: 14px;
       outline: none;
@@ -50,7 +55,7 @@
       height: var(--rec-btn-size);
       background: linear-gradient(90deg, #000000 100%, #ffffff 0%);
     }
-    .controlBtn:disabled {
+    button:disabled {
       color: grey;
       background-color: black;
     }
@@ -61,15 +66,40 @@
     }
     #playerContainer {  
     }
-    #finalQrs img {
-      max-width:100%;
-      max-height:100%;
+    #finalQrs {
+      margin-top: 30px;
+    }
+    #finalQrsDevider {
+      margin-top: 20px;
+    }
+    .imgEntry {
+      display: flex;
+    }
+    .imgEntry button {
+      flex-grow: 1;
+      margin-left: 5px;
+      margin-right: 5px;
+      
+    }
+    .qrImg {
+      max-height: 100%;
+      max-width: 100%;
     }
     #buttonsContainer {
       display: flex;
     }
     #buttonsContainer button {
       margin: 3px;      
+    }
+    .social-media-links {
+      margin-left: 20px;
+      float: right;
+    }
+    .social-media-item {
+      margin: 3px;
+    }
+    #social-media-panel {
+      margin-bottom: 100px;
     }
     @keyframes countDown {
       /* for (let i = 0; i <= 100; i += 100/25) { console.log(`${i}% {background: linear-gradient(90deg, #000000 ${100 - i}%, #ffffff 0%);}`) } */
@@ -107,6 +137,11 @@
 
   <div class="centerDiv">
     <h1>STREET SOUNDS</h1>
+    <p>
+      Paper one of the oldest media of storing information and can last for a hundred of years. 
+      This project allows you to encode an audio message into QR codes that can be posted on a wall, stored or sent via mail. 
+      Anyone can decode this QRs with an app for iOS or Android. This creates a message that can be transmitted through time and space.
+    </p>
     <canvas id="analyser" width="400" height="200"></canvas>
     
     <audio id="player" controls></audio>      
@@ -117,7 +152,23 @@
     </div>
     
     <!-- <a id="save" href="#">Download</a> -->
+    <!-- <hr id="finalQrsDevider"> -->
     <div id="finalQrs"></div>
+
+    <div id="social-media-panel">
+      <div class="social-media-links">
+        <span class="social-media-item">kirill</span>
+        <a class="fa fa-github social-media-item" href="https://github.com/kif11"></a>
+        <a class="fa fa-instagram social-media-item" href="https://instagram.com/kif11"></a>
+        <a class="fa fa-twitter social-media-item" href="https://twitter.com/kovalewskiy"></a>
+      </div>
+      <div class="social-media-links">
+        <span class="social-media-item">sneha</span>
+        <a class="fa fa-github social-media-item" href="https://github.com/sneha-belkhale"></a>
+        <a class="fa fa-instagram social-media-item" href="https://www.instagram.com/snayss/"></a>
+        <a class="fa fa-twitter social-media-item" href="https://twitter.com/snayyss"></a>
+      </div>
+    </div>
   </div>
 
 </body>

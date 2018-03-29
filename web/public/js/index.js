@@ -9,6 +9,26 @@ let recordBtnText = 'RECORD';
 let recordDuration = 8; // seconds
 let curRecordingData = null;
 
+function updateFinalQrs (images) {
+  $('#finalQrs').empty();
+
+  images.forEach(img => {
+    $(`<img class="qrImg" src=${img} />`).appendTo('#finalQrs');
+  });
+  // let qrEntry = $(`
+  //   <div class="imgEntry">
+  //     ${imagTags}
+  //     <button> Print </button>
+  //     <button> Download </button>
+  //   </div>
+  // `);
+  // $(imagTags).appendTo('#finalQrs');
+}
+
+$(document).ready(() => {
+  
+});
+
 $('#recordBtn').click(event => {
 
   if (isRecording)
@@ -52,11 +72,7 @@ $('#saveQrBtn').click(event => {
   formData.append('selectedFile', curRecordingData);
 
   axios.post('/upload', formData).then((result) => {
-    result.data.forEach(imgPath => {      
-      let img = $('<img id="qrImg">');
-      img.attr('src', imgPath);
-      img.appendTo('#finalQrs');
-    });
+    updateFinalQrs(result.data);
   }).catch(err => {
     console.log(err);
   });
