@@ -5,9 +5,15 @@ let analyserContext = null;
 let player = document.getElementById('player');
 let isRecording = false;
 let recIndex = 0;
+let recordDuration = 10; // seconds
 let recordBtnText = 'RECORD';
-let recordDuration = 8; // seconds
 let curRecordingData = null;
+let intervalId = null;
+let timeoutId = null;
+
+$(document).ready(() => {
+  let recordDuration = getDuration();
+});
 
 function updateFinalQrs (images) {
   $('#finalQrs').empty();
@@ -15,52 +21,68 @@ function updateFinalQrs (images) {
   images.forEach(img => {
     $(`<img class="qrImg" src=${img} />`).appendTo('#finalQrs');
   });
-  // let qrEntry = $(`
-  //   <div class="imgEntry">
-  //     ${imagTags}
-  //     <button> Print </button>
-  //     <button> Download </button>
-  //   </div>
-  // `);
-  // $(imagTags).appendTo('#finalQrs');
 }
 
-$(document).ready(() => {
+function stopRecording() {
+  console.log('Stopping recording');
   
+  // stop recording
+  audioRecorder.stop();
+
+  isRecording = false;
+
+  audioRecorder.exportMp3( doneEncoding );
+
+  clearInterval(intervalId);
+  clearTimeout(timeoutId);
+
+  $('#recordBtn').text(recordBtnText);
+  $('#recordBtn').attr('recording', 'false');
+}
+
+function getDuration() {
+  radios = $('.radioBtn');
+  for ( let i=0; i < radios.length; i++) {
+    if (radios[i].checked) {
+      return parseInt(radios[i].id);
+    }
+  }
+  return -1;
+}
+
+$('.radioBtn').click(event => {
+  recordDuration = getDuration();
 });
 
 $('#recordBtn').click(event => {
-
-  if (isRecording)
+  
+  if (isRecording) {
+    stopRecording(intervalId);
     return;
+  }
 
+  console.log('Starting recording');
+  
   // start recording
-  $('#recordBtn').attr('recording', 'true');
   isRecording = true;
   audioRecorder.clear();
   audioRecorder.record();
 
   let counter = recordDuration;
-  $('#recordBtn p').text("");
+
+  $('#recordBtn').text(counter);
+  $('#recordBtn').attr('recording', 'true');
   
-  let intervalId = setInterval(() => {
+  intervalId = setInterval(() => {
     counter--;      
-    $('#recordBtn p').text("");
+    $('#recordBtn').text(counter);
   }, 1000);
 
-  setTimeout(intervalId => {
-    if (!audioRecorder)
+  timeoutId = setTimeout(intervalId => {
+    if (!audioRecorder) {
       return;
-    // stop recording
-    audioRecorder.stop();
-    
-    isRecording = false;
-    $('#recordBtn').attr('recording', 'false');
-    
-    audioRecorder.exportMp3( doneEncoding );
-    
-    clearInterval(intervalId);
-    $('#recordBtn p').text(recordBtnText);
+    }
+    stopRecording(intervalId);
   }, recordDuration * 1000, intervalId);
 })
 

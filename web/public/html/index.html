@@ -30,9 +30,9 @@
     a {
       color: black;
     }
-    p {
+    #description {
       text-align: justify;
-      margin-top: 50px;
+      margin-top: 35px;
     }
     h1 {
       font-size: 98px;
@@ -49,21 +49,24 @@
     }
     button {
       color: white;
-      font-size: 14px;
+      font-size: 16px;
       outline: none;
       background-color: black;
       width: var(--page-width);
       height: var(--rec-btn-size);
-      background: linear-gradient(90deg, #000000 100%, #ffffff 0%);
+      background-color: black;
+    }
+    button:hover {
+      cursor: pointer;
     }
     button:disabled {
       color: grey;
       background-color: black;
+      cursor: not-allowed;      
     }
     #recordBtn[recording="true"] {
-      background-color: red;
-      animation-name: countDown;
-      animation-duration: 8s;
+      background-color: #ca3d3d;
+      /* pointer-events: none; */
     }
     #playerContainer {  
     }
@@ -102,34 +105,74 @@
     #social-media-panel {
       margin-bottom: 100px;
     }
-    @keyframes countDown {
-      /* for (let i = 0; i <= 100; i += 100/25) { console.log(`${i}% {background: linear-gradient(90deg, #000000 ${100 - i}%, #ffffff 0%);}`) } */
-      0% {background: linear-gradient(90deg, #000000 100%, #ffffff 0%);}
-      4% {background: linear-gradient(90deg, #000000 96%, #ffffff 0%);}
-      8% {background: linear-gradient(90deg, #000000 92%, #ffffff 0%);}
-      12% {background: linear-gradient(90deg, #000000 88%, #ffffff 0%);}
-      16% {background: linear-gradient(90deg, #000000 84%, #ffffff 0%);}
-      20% {background: linear-gradient(90deg, #000000 80%, #ffffff 0%);}
-      24% {background: linear-gradient(90deg, #000000 76%, #ffffff 0%);}
-      28% {background: linear-gradient(90deg, #000000 72%, #ffffff 0%);}
-      32% {background: linear-gradient(90deg, #000000 68%, #ffffff 0%);}
-      36% {background: linear-gradient(90deg, #000000 64%, #ffffff 0%);}
-      40% {background: linear-gradient(90deg, #000000 60%, #ffffff 0%);}
-      44% {background: linear-gradient(90deg, #000000 56%, #ffffff 0%);}
-      48% {background: linear-gradient(90deg, #000000 52%, #ffffff 0%);}
-      52% {background: linear-gradient(90deg, #000000 48%, #ffffff 0%);}
-      56% {background: linear-gradient(90deg, #000000 44%, #ffffff 0%);}
-      60% {background: linear-gradient(90deg, #000000 40%, #ffffff 0%);}
-      64% {background: linear-gradient(90deg, #000000 36%, #ffffff 0%);}
-      68% {background: linear-gradient(90deg, #000000 32%, #ffffff 0%);}
-      72% {background: linear-gradient(90deg, #000000 28%, #ffffff 0%);}
-      76% {background: linear-gradient(90deg, #000000 24%, #ffffff 0%);}
-      80% {background: linear-gradient(90deg, #000000 20%, #ffffff 0%);}
-      84% {background: linear-gradient(90deg, #000000 16%, #ffffff 0%);}
-      88% {background: linear-gradient(90deg, #000000 12%, #ffffff 0%);}
-      92% {background: linear-gradient(90deg, #000000 8%, #ffffff 0%);}
-      96% {background: linear-gradient(90deg, #000000 4%, #ffffff 0%);}
-      100% {background: linear-gradient(90deg, #000000 0%, #ffffff 0%);}
+
+    #durationSelector {
+      display: inline-block;
+    }
+
+    #durationSelector p {
+      float: left;
+      margin-left: 10px;
+      margin-top: 0px;
+    }
+
+    #durationSelector p:last-child {
+      font-size: 11px;
+      color: #9E9E9E;
+      margin: 0px;
+      padding: 2px 87px 0px 14px;
+    }
+
+
+    [type="radio"]:checked,
+    [type="radio"]:not(:checked) {
+        position: absolute;
+        left: -9999px;
+    }
+    [type="radio"]:checked + label,
+    [type="radio"]:not(:checked) + label
+    {
+        position: relative;
+        padding-left: 28px;
+        cursor: pointer;
+        line-height: 20px;
+        display: inline-block;
+        color: #666;
+    }
+    [type="radio"]:checked + label:before,
+    [type="radio"]:not(:checked) + label:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 18px;
+        height: 18px;
+        border: 1px solid #ddd;
+        border-radius: 100%;
+        background: #fff;
+    }
+    [type="radio"]:checked + label:after,
+    [type="radio"]:not(:checked) + label:after {
+        content: '';
+        width: 12px;
+        height: 12px;
+        background: black;
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        border-radius: 100%;
+        -webkit-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+    }
+    [type="radio"]:not(:checked) + label:after {
+        opacity: 0;
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    [type="radio"]:checked + label:after {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1);
     }
   </style>
 </head>
@@ -138,14 +181,30 @@
 
   <div class="centerDiv">
     <h1>STREET SOUNDS</h1>
-    <p>
+    <p id="description">
       Paper one of the oldest media of storing information and can last for a hundred of years. 
       This project allows you to encode an audio message into QR codes that can be posted on a wall, stored or sent via mail. 
       Anyone can decode this QRs with an app for iOS or Android. This creates a message that can be transmitted through time and space.
     </p>
     <canvas id="analyser" width="400" height="200"></canvas>
     
-    <audio id="player" controls></audio>      
+    <audio id="player" controls></audio>
+
+    <form action="#" id="durationSelector">
+      <p>
+        <input class="radioBtn" type="radio" id="10" name="radio-group" checked>
+        <label for="10">10 sec</label>
+      </p>
+      <p>
+        <input class="radioBtn" type="radio" id="20" name="radio-group">
+        <label for="20">20 sec</label>
+      </p>
+      <p>
+        <input class="radioBtn" type="radio" id="30" name="radio-group">
+        <label for="30">30 sec</label>
+      </p>
+      <p>each sheet store 10 sec of audio</p>
+    </form>
     
     <div id="buttonsContainer">
       <button class="controlBtn" id="recordBtn" recording="false"> RECORD </button>
