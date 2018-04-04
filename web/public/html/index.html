@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Street Sounds Recorder</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="js/recorder.js"></script>
+  <style>
+    :root {
+      --page-width: 800px;
+      --rec-btn-size: 60px;
+    }
+    body, html {
+      font-family: 'Raleway', sans-serif;
+      margin: 0px;
+      padding: 0px;
+    }
+    .centerDiv {
+      width: var(--page-width);
+      margin: auto;
+    }
+    a {
+      color: black;
+    }
+    #description {
+      text-align: justify;
+      margin-top: 35px;
+    }
+    h1 {
+      font-size: 98px;
+      margin-bottom: 0;
+      margin-top: 20px;
+    }
+    audio { 
+      width: var(--page-width);
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    canvas {
+      width: var(--page-width);
+    }
+    button {
+      color: white;
+      font-size: 16px;
+      outline: none;
+      background-color: black;
+      width: var(--page-width);
+      height: var(--rec-btn-size);
+      background-color: black;
+    }
+    button:hover {
+      cursor: pointer;
+    }
+    button:disabled {
+      color: grey;
+      background-color: black;
+      cursor: not-allowed;      
+    }
+    #recordBtn[recording="true"] {
+      background-color: #ca3d3d;
+      /* pointer-events: none; */
+    }
+    #playerContainer {  
+    }
+    #finalQrs {
+      margin-top: 30px;
+    }
+    #finalQrsDevider {
+      margin-top: 20px;
+    }
+    .imgEntry {
+      display: flex;
+    }
+    .imgEntry button {
+      flex-grow: 1;
+      margin-left: 5px;
+      margin-right: 5px;
+      
+    }
+    .qrImg {
+      max-height: 100%;
+      max-width: 100%;
+    }
+    #buttonsContainer {
+      display: flex;
+    }
+    #buttonsContainer button {
+      margin: 3px;      
+    }
+    .social-media-links {
+      margin-left: 20px;
+      float: right;
+    }
+    .social-media-item {
+      margin: 3px;
+    }
+    #social-media-panel {
+      margin-bottom: 100px;
+    }
+
+    #durationSelector {
+      display: inline-block;
+    }
+
+    #durationSelector p {
+      float: left;
+      margin-left: 10px;
+      margin-top: 0px;
+    }
+
+    #durationSelector p:last-child {
+      font-size: 11px;
+      color: #9E9E9E;
+      margin: 0px;
+      padding: 2px 87px 0px 14px;
+    }
+
+
+    [type="radio"]:checked,
+    [type="radio"]:not(:checked) {
+        position: absolute;
+        left: -9999px;
+    }
+    [type="radio"]:checked + label,
+    [type="radio"]:not(:checked) + label
+    {
+        position: relative;
+        padding-left: 28px;
+        cursor: pointer;
+        line-height: 20px;
+        display: inline-block;
+        color: #666;
+    }
+    [type="radio"]:checked + label:before,
+    [type="radio"]:not(:checked) + label:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 18px;
+        height: 18px;
+        border: 1px solid #ddd;
+        border-radius: 100%;
+        background: #fff;
+    }
+    [type="radio"]:checked + label:after,
+    [type="radio"]:not(:checked) + label:after {
+        content: '';
+        width: 12px;
+        height: 12px;
+        background: black;
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        border-radius: 100%;
+        -webkit-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+    }
+    [type="radio"]:not(:checked) + label:after {
+        opacity: 0;
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    [type="radio"]:checked + label:after {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="centerDiv">
+    <h1>STREET SOUNDS</h1>
+    <p id="description">
+      Paper one of the oldest media of storing information and can last for a hundred of years. 
+      This project allows you to encode an audio message into QR codes that can be posted on a wall, stored or sent via mail. 
+      Anyone can decode this QRs with an app for iOS or Android. This creates a message that can be transmitted through time and space.
+    </p>
+    <canvas id="analyser" width="400" height="200"></canvas>
+    
+    <audio id="player" controls></audio>
+
+    <form action="#" id="durationSelector">
+      <p>
+        <input class="radioBtn" type="radio" id="10" name="radio-group" checked>
+        <label for="10">10 sec</label>
+      </p>
+      <p>
+        <input class="radioBtn" type="radio" id="20" name="radio-group">
+        <label for="20">20 sec</label>
+      </p>
+      <p>
+        <input class="radioBtn" type="radio" id="30" name="radio-group">
+        <label for="30">30 sec</label>
+      </p>
+      <p>each sheet store 10 sec of audio</p>
+    </form>
+    
+    <div id="buttonsContainer">
+      <button class="controlBtn" id="recordBtn" recording="false"> RECORD </button>
+      <button class="controlBtn" id="saveQrBtn" recording="false" disabled> MAKE QR </button>
+    </div>
+    
+    <!-- <a id="save" href="#">Download</a> -->
+    <!-- <hr id="finalQrsDevider"> -->
+    <div id="finalQrs"></div>
+
+    <div id="social-media-panel">
+      <div class="social-media-links">
+        <span class="social-media-item">kirill</span>
+        <a class="fa fa-github social-media-item" href="https://github.com/kif11"></a>
+        <a class="fa fa-instagram social-media-item" href="https://instagram.com/kif11"></a>
+        <a class="fa fa-twitter social-media-item" href="https://twitter.com/kovalewskiy"></a>
+      </div>
+      <div class="social-media-links">
+        <span class="social-media-item">sneha</span>
+        <a class="fa fa-github social-media-item" href="https://github.com/sneha-belkhale"></a>
+        <a class="fa fa-instagram social-media-item" href="https://www.instagram.com/snayss/"></a>
+        <a class="fa fa-twitter social-media-item" href="https://twitter.com/snayyss"></a>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+<script src="js/index.js"></script>
+
+</html>
