@@ -6,7 +6,7 @@
     <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
     <item name="actionMenuTextColor">@color/colorPrimary</item>
     <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorPrimaryDark">@color/colorReallyDarkButNotBlack</item>
     <item name="colorAccent">@color/colorAccent</item>
 </style>
 

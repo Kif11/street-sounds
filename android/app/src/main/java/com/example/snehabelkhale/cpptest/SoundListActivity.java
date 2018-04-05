@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -51,7 +52,19 @@ public class SoundListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sound_list);
         setTitle("Decoded Messages");
-        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems);
+        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listItems) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                // Get the Item from ListView
+                View view = super.getView(position, convertView, parent);
+                // Initialize a TextView for ListView each Item
+                TextView tv = (TextView) view.findViewById(android.R.id.text1);
+                // Set the text color of TextView (ListView Item)
+                tv.setTextColor(getResources().getColor(R.color.colorAccent));
+                // Generate ListView Item using TextView
+                return view;
+            }
+        };
 
         //set up the sound list view
         soundListView = findViewById(R.id.soundList);
@@ -60,11 +73,13 @@ public class SoundListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View arg1, int position, long id) {
                 if (lastSelected != -1) {
-                    parent.getChildAt(lastSelected).setBackgroundColor(Color.parseColor("#ffffff"));
-                    arg1.setBackgroundColor(Color.parseColor("#ffffff"));
+                    parent.getChildAt(lastSelected).setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                    TextView tv = parent.getChildAt(lastSelected).findViewById(android.R.id.text1);
+                    tv.setTextColor(getResources().getColor(R.color.colorAccent));
                 }
-                parent.getChildAt(position).setBackgroundColor(Color.parseColor("#49d9ff"));
-                arg1.setBackgroundColor(Color.parseColor("#49d9ff"));
+                arg1.setBackgroundColor(Color.parseColor("#00cfb7"));
+                TextView tx = arg1.findViewById(android.R.id.text1);
+                tx.setTextColor(getResources().getColor(R.color.colorPrimary));
 
                 playSound(listItems.get(position));
                 lastSelected = position;
