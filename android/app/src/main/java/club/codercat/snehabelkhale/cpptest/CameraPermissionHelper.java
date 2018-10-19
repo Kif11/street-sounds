@@ -1,4 +1,4 @@
-package com.example.snehabelkhale.cpptest;
+package club.codercat.snehabelkhale.cpptest;
 
 import android.Manifest;
 import android.app.Activity;

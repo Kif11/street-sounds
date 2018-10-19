@@ -1,4 +1,4 @@
-package com.example.snehabelkhale.cpptest;
+package club.example.snehabelkhale.cpptest;
 
 import org.junit.Test;
 

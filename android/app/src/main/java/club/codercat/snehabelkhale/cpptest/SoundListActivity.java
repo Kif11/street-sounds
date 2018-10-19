@@ -1,4 +1,4 @@
-package com.example.snehabelkhale.cpptest;
+package club.codercat.snehabelkhale.cpptest;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -8,10 +8,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +17,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import club.codercat.snehabelkhale.cpptest.R;
+
 import java.io.File;
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by snehabelkhale on 1/6/18.
@@ -157,6 +153,7 @@ public class SoundListActivity extends AppCompatActivity {
         if (listItems.size() == 0) {
             TextView textView = (TextView) findViewById(R.id.noMessages);
             textView.setVisibility(View.VISIBLE);
+            textView.setTextColor(getResources().getColor(R.color.colorAccent));
         }
 
         //Check if there was a sound name sent with the intent, from the main activity
@@ -173,7 +170,9 @@ public class SoundListActivity extends AppCompatActivity {
                     //and highlight the corresponding sound name in the list view
                     lastSelected = 0;
                     View arg1 = soundListView.getChildAt(0);
-                    arg1.setBackgroundColor(Color.parseColor("#49d9ff"));
+                    arg1.setBackgroundColor(Color.parseColor("#00cfb7"));
+                    TextView tx = arg1.findViewById(android.R.id.text1);
+                    tx.setTextColor(getResources().getColor(R.color.colorPrimary));
                 }
             }, 1000);
         }
@@ -193,6 +192,18 @@ public class SoundListActivity extends AppCompatActivity {
         super.onStart();
         adapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();  // Always call the superclass method first
+        // Release the Camera because we don't need it when paused
+        // and other activities might need to use it.
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event)

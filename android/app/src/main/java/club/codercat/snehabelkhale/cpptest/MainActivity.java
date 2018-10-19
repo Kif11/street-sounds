@@ -1,16 +1,12 @@
-package com.example.snehabelkhale.cpptest;
-import android.Manifest;
+package club.codercat.snehabelkhale.cpptest;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.icu.text.SimpleDateFormat;
-import android.net.Uri;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -20,16 +16,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import club.codercat.snehabelkhale.cpptest.R;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
 
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -208,9 +202,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (CameraPermissionHelper.hasCameraPermission(this)) {
-            //do nothing
+            openCamera();
         } else {
             CameraPermissionHelper.requestCameraPermission(this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();  // Always call the superclass method first
+        // Release the Camera because we don't need it when paused
+        // and other activities might need to use it.
+        if (mCamera != null) {
+            Log.e(TAG, "releasing camera");
+            mCamera.release();
+            mCamera = null;
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.snehabelkhale.cpptest;
+package club.codercat.snehabelkhale.cpptest;
 
 /**
  * Created by snehabelkhale on 12/26/17.

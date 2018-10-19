@@ -11,7 +11,7 @@ extern "C"
 JNIEXPORT jstring
 
 JNICALL
-Java_com_example_snehabelkhale_cpptest_MainActivity_stringFromJNI(
+Java_club_codercat_snehabelkhale_cpptest_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
@@ -22,7 +22,7 @@ Java_com_example_snehabelkhale_cpptest_MainActivity_stringFromJNI(
 QrReader qr;
 
 extern "C"
-JNIEXPORT void JNICALL Java_com_example_snehabelkhale_cpptest_MainActivity_getDebugImage(
+JNIEXPORT void JNICALL Java_club_codercat_snehabelkhale_cpptest_MainActivity_getDebugImage(
         JNIEnv *env,
         jobject instance,
         jlong debug) {
@@ -36,7 +36,7 @@ JNIEXPORT void JNICALL Java_com_example_snehabelkhale_cpptest_MainActivity_getDe
 }
 
 extern "C"
-JNIEXPORT void JNICALL Java_com_example_snehabelkhale_cpptest_MainActivity_restartQRReader(
+JNIEXPORT void JNICALL Java_club_codercat_snehabelkhale_cpptest_MainActivity_restartQRReader(
         JNIEnv *env,
         jobject instance) {
     qr.clear_data();
@@ -47,7 +47,7 @@ extern "C"
 JNIEXPORT jstring
 
 JNICALL
-Java_com_example_snehabelkhale_cpptest_MainActivity_readImage(JNIEnv *env, jobject instance, jlong test) {
+Java_club_codercat_snehabelkhale_cpptest_MainActivity_readImage(JNIEnv *env, jobject instance, jlong test) {
     std::string debug = "";
     cv::Mat &matPtr = *(cv::Mat*)test;
 
