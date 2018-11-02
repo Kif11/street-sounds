@@ -1,14 +1,18 @@
 apply plugin: 'com.android.application'
 
+// See https://developer.android.com/studio/publish/app-signing
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     signingConfigs {
-        SnehaBelkhale {
-        }
         config {
-            keyAlias 'key0'
-            keyPassword 'Xr7vV2LqiRJk'
-            storeFile file('/Users/snehabelkhale/keystores/android.jks')
-            storePassword 'Xr7vV2LqiRJk'
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
     compileSdkVersion 26

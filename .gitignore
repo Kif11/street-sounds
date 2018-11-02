@@ -11,6 +11,9 @@ android/includeLibs
 android/openCVLibrary310/
 android/OpenCV-android-sdk
 android/app/src/main/jniLibs/
+android/app/release
+android/.idea
+android/keystore.properties
 
 web/converted/
 web/node_modules/
